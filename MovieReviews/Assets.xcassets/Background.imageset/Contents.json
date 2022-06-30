@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "Yellow Modern Hello April (Poster) (1).png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
+  }
+}
