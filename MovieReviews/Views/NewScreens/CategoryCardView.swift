@@ -11,33 +11,63 @@ struct CategoryCard: View {
     
     let movie: Movie
     @ObservedObject var imageLoader = ImageLoader()
-  
+    private func getScale(proxy: GeometryProxy) -> CGFloat {
+        var scale: CGFloat = 1
+        
+        let x = proxy.frame(in: .global).minX
+        
+        let diff = abs(x - 30)
+        if diff < 100 {
+            scale = 1 + (100 - diff) / 500
+        }
+        
+        return scale
+    }
+    
     
     var body: some View {
         ZStack {
             GeometryReader { proxy in
-                let minX = proxy.frame(in: .global).minX
+                let scale = getScale(proxy: proxy)
                 
                 if self.imageLoader.image != nil {
-                    
-                    Image(uiImage: self.imageLoader.image!)
-                    
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 120))
-                        .rotation3DEffect(.degrees(minX / -8), axis: (x: 0, y: 1, z: 0 ))
-
+                    VStack {
+                        Image(uiImage: self.imageLoader.image!)
+                        
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 200, height: 270)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 5).stroke(lineWidth: 0.5)
+                            )
+                            .clipped()
+                            .cornerRadius(5)
+                            .shadow(radius: 5)
+                            
+                            .scaleEffect(CGSize(width: scale, height: scale))
+                            
+                        VStack(alignment: .leading, spacing: 6) {
+                        Text(movie.title)
+                                .font(.system(size: 20, weight: .semibold, design: .serif))
+                        Text("Rating: \(movie.scoreText)")
+                        Text("Year: \(movie.yearText)")
+                        }
+                        .frame(width: 200, height: 80, alignment: .leading)
+                        .padding(.vertical, 28)
+                    }
+                    .frame(width: 150, height: 400)
+                   
                 } else {
                     Rectangle()
                         .fill(Color.white)
                         .shadow(radius: 4)
                 }
             }
-            .frame(width: 250, height: 450).cornerRadius(120)
+            .frame(width: 150, height: 400)
             .onAppear {
                 self.imageLoader.loadImage(with: self.movie.posterURL)
             }
-        }
+        }.padding(32)
     }
 }
 
@@ -46,17 +76,14 @@ struct CategoryCardView: View {
     let title: String
     let movies: [Movie]
     
+
     var body: some View {
         ZStack{
             
-            VStack(alignment: .leading, spacing: 70) {
-               Spacer()
-                Text(title)
-                    .foregroundColor(.teal)
-                    .fontWeight(.bold)
+            VStack(alignment: .leading, spacing: 20) {
+
+                Text(title).font(.system(size: 30, weight: .semibold))
                     .padding(.horizontal)
-                    .font(.system(size: 50))
-                    .transition(.move(edge: .bottom))
               
                 
                 ScrollView(.horizontal,showsIndicators: false) {
@@ -76,10 +103,8 @@ struct CategoryCardView: View {
                     }
                 }
             }
-            Spacer(minLength: 150)
-            
         }
-        }.transition( .move(edge: .leading))
+        }
                      
 
     }
