@@ -53,10 +53,9 @@ struct TabView: View {
                     }
                     .foregroundStyle(selectedTab == items.tab ? .primary : .secondary)
                 }
-            }.padding(.horizontal, 8)
-            .padding(.top, 14)
-        
-            .padding()
+            }
+            .padding(.horizontal, 8)
+           
         }
         }
     }

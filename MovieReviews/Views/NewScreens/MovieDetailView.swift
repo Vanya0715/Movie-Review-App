@@ -21,62 +21,44 @@ struct MovieDetailView: View {
             
             if movieDetailState.movie != nil {
                 MovieDetailListView(movie: self.movieDetailState.movie!)
-                
             }
         }
-        .navigationBarTitle(movieDetailState.movie?.title ?? "")
-        .onAppear {
-            self.movieDetailState.loadMovie(id: self.movieId)
-        }
+        .navigationViewStyle(.stack)
+        .navigationBarTitleDisplayMode(.inline)
+            .onAppear {
+                self.movieDetailState.loadMovie(id: self.movieId)
+            }
+
     }
 }
 
 struct MovieDetailListView: View {
     
     let movie: Movie
-   
+    
     let imageLoader = ImageLoader()
+    let maxHeight = UIScreen.main.bounds.height / 2
+    @State var offset: CGFloat = 0
     
     var body: some View {
-        ZStack{
+      
             
-            List {
-                
-                MovieDetailImage(imageLoader: imageLoader, imageURL: self.movie.backdropURL)
-                    .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
-                
-                Spacer()
-                
-                
-                HStack {
-                    Text(movie.genreText)
-                    Text("|")
-                    Text(movie.yearText)
-                    Text("|")
-                    Text(movie.durationText)
-                }.foregroundColor(.teal).font(.headline)
-                
-                
+            ScrollView(.vertical, showsIndicators: false) {
+                VStack(spacing: 20) {
+                    MovieDetail(movie: movie)
+                        .ignoresSafeArea(.all, edges: .top)
+                    Spacer()
+                    Divider()
+                    Spacer()
                 Text(movie.overview) .padding()
 
-                
-                Spacer()
-                
-                HStack(alignment: .center) {
-                    if !movie.ratingText.isEmpty {
-                        Text(movie.ratingText).foregroundColor(.teal)
-                    }
-                    Text(movie.scoreText)
-                        .multilineTextAlignment(.center)
-                }.font(.system(.title))
-                    .padding()
-                
-               Spacer()
-                
+                Divider()
                 HStack(alignment: .top, spacing: 4) {
                     if movie.cast != nil && movie.cast!.count > 0 {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Starring").font(.headline).foregroundColor(.teal)
+                            Text("Starring")
+                                .font(.system(size: 20, weight:.semibold, design:.serif))
+                            
                             ForEach(self.movie.cast!.prefix(9)) { cast in
                                 Text(cast.name)
                             }
@@ -89,22 +71,26 @@ struct MovieDetailListView: View {
                     if movie.crew != nil && movie.crew!.count > 0 {
                         VStack(alignment: .leading, spacing: 4) {
                             if movie.directors != nil && movie.directors!.count > 0 {
-                                Text("Director(s)").font(.headline).foregroundColor(.teal)
+                                Text("Director(s)")
+                                    .font(.system(size: 20, weight:.semibold, design:.serif))
+                                
                                 ForEach(self.movie.directors!.prefix(2)) { crew in
                                     Text(crew.name)
                                 }
                             }
                             
                             if movie.producers != nil && movie.producers!.count > 0 {
-                                Text("Producer(s)").font(.headline).foregroundColor(.teal)
-                                    .padding(.top)
+                                Text("Producer(s)")
+                                    .font(.system(size: 20, weight:.semibold, design:.serif))
+                                
                                 ForEach(self.movie.producers!.prefix(2)) { crew in
                                     Text(crew.name)
                                 }
                             }
                             
                             if movie.screenWriters != nil && movie.screenWriters!.count > 0 {
-                                Text("Screenwriter(s)").font(.headline).foregroundColor(.teal)
+                                Text("Screenwriter(s)")
+                                    .font(.system(size: 22, weight:.semibold, design:.serif))
                                     .padding(.top)
                                 ForEach(self.movie.screenWriters!.prefix(2)) { crew in
                                     Text(crew.name)
@@ -112,41 +98,94 @@ struct MovieDetailListView: View {
                             }
                         }
                     }
-                }
-            }
-        }.transition(AnyTransition.asymmetric(
-            insertion: .move(edge: .bottom),
-            removal: .move(edge: .top)))
-                     .animation(.easeInOut)
+                }.padding()
+                
+            }.ignoresSafeArea(.all, edges: .top)
             
-
+                    .navigationBarHidden(true)
+            } .coordinateSpace(name: "SCROLL")
     }
 }
 
-struct MovieDetailImage: View {
+struct MovieDetail: View {
     
-    @ObservedObject var imageLoader: ImageLoader
-    let imageURL: URL
-    
+    let maxHeight = UIScreen.main.bounds.height / 1.6
+    let movie: Movie
+    @ObservedObject var imageLoader = ImageLoader()
+    @State var offset: CGFloat = 0
+    @Environment(\.presentationMode) private var presentationMode
+
     var body: some View {
-        ZStack {
-            Rectangle().fill(Color.gray.opacity(0.3))
-            if self.imageLoader.image != nil {
-                Image(uiImage: self.imageLoader.image!)
-                    .resizable()
+
+            VStack {
+                GeometryReader { proxy in
+                    
+                    VStack (spacing: 15) {
+                        
+                        if self.imageLoader.image != nil {
+                            Image(uiImage: self.imageLoader.image!)
+                                .resizable()
+                                .edgesIgnoringSafeArea(.top)
+                        }
+                    }
+                    .onAppear {
+                        self.imageLoader.loadImage(with:  self.movie.posterURL)
+                    }
+                    .clipShape(CustomCorner(corners: [.bottomLeft,.bottomRight], radius: 60))
+                    .frame(maxWidth: .infinity)
+                    .frame(height: maxHeight + offset, alignment: .bottom)
+                    .shadow(color: .black.opacity(0.7), radius: 8, y: 15)
+//                    .overlay(HStack {
+//                        Spacer()
+//                        Button {
+//
+//                        } label: {
+//                            Image(systemName: "xmark")
+//                                .font(.body.bold())
+//                                .foregroundColor(.white)
+//                        }.padding()
+//                    }.padding()
+//                             ,alignment: .top
+//                    )
+                }
+                .frame(height: maxHeight)
+                .offset(y: -offset)
+                
+                VStack(alignment: .leading, spacing: 10) {
+                
+                        Text(movie.title)
+                            .font(.system(size: 25, weight: .bold, design: .serif))
+                            .padding(.horizontal)
+                        HStack {
+                            Text(movie.genreText)
+                            Text("|")
+                            Text(movie.yearText)
+                            Text("|")
+                            Text(movie.durationText)
+                        }
+                        .padding(.horizontal)
+                        .font(.system(size: 18, weight: .medium, design: .serif))
+                        HStack {
+                        Text(movie.scoreText)
+                            Text(movie.ratingText).foregroundColor(.yellow)
+                        }
+                        .padding(.horizontal)
+                        .font(.system(size: 18, weight: .medium, design: .serif))
+                 
+                    }
+              
+                .frame(width: 375, alignment: .leading)
+                .padding(.top, 15)
+            }
+            .modifier(OffsetModifier(offset: $offset))
+    }
+}
+    struct MovieDetailView_Previews: PreviewProvider {
+        static var previews: some View {
+            NavigationView {
+                MovieDetailView(movieId: Movie.stubbedMovie.id)
             }
         }
-        .aspectRatio(16/9, contentMode: .fit)
-        .onAppear {
-            self.imageLoader.loadImage(with: self.imageURL)
-        }
+        
     }
-}
 
-struct MovieDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationView {
-            MovieDetailView(movieId: Movie.stubbedMovie.id)
-        }
-    }
-}

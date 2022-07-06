@@ -21,3 +21,9 @@ var tabItems = [
     TabItem(text: "Top Rated", icon: "flame.circle", tab: .topRated, color: .green),
     TabItem(text: "Popular", icon: "heart.circle", tab: .popular, color: .purple)
 ]
+enum Title: String {
+    case nowPlaying = "Now Playing"
+    case upcoming = "Upcoming"
+    case topRated = "Top Rated"
+    case popular = "Popular"
+}

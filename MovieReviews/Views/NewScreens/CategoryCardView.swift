@@ -36,7 +36,7 @@ struct CategoryCard: View {
                         
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 200, height: 270)
+                            .frame(width: 200, height: 300)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 5).stroke(lineWidth: 0.5)
                             )
@@ -55,7 +55,7 @@ struct CategoryCard: View {
                         .frame(width: 200, height: 80, alignment: .leading)
                         .padding(.vertical, 28)
                     }
-                    .frame(width: 150, height: 400)
+                    .frame(width: 200, height: 400)
                    
                 } else {
                     Rectangle()
@@ -87,17 +87,15 @@ struct CategoryCardView: View {
               
                 
                 ScrollView(.horizontal,showsIndicators: false) {
-                    HStack(alignment:.center, spacing: 16) {
-                        
+                    HStack(alignment:.center, spacing: 12) {
+                        Spacer()
                         ForEach(self.movies) { movie in
-                            
+                        
                         NavigationLink(destination: MovieDetailView(movieId: movie.id)) {
                             CategoryCard(movie: movie)
-                            
                         }
                         .buttonStyle(PlainButtonStyle())
-                        .padding(.leading, movie.id == self.movies.first!.id ? 16 : 0)
-                        .padding(.trailing, movie.id == self.movies.last!.id ? 16 : 0)
+                        .padding()
                         
                         
                     }

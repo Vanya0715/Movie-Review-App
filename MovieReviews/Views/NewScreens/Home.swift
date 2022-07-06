@@ -18,6 +18,7 @@ struct Home: View {
                         } label: {
                             SearchBarView(placeholder: "Search Here", text: self.$movieSearchState.query)
                         }
+                Spacer()
                 TabView()
             }
         }
