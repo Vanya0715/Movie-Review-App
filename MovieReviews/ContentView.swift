@@ -10,7 +10,8 @@ import SwiftUI
 struct ContentView: View {
     var body: some View {
         NavigationView{
-       Home()
+            LaumchScreen()
+            
         }
    
     }
@@ -18,6 +19,5 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-      Home()
-    }
+        LaumchScreen()    }
 }

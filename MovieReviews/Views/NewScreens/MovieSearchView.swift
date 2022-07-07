@@ -12,11 +12,12 @@ struct MovieSearchView: View {
     
     var body: some View {
        
-           
-                List {
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [.blue.opacity(0.2), .purple.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
+                           .edgesIgnoringSafeArea(.all)
+               ScrollView {
+                   VStack {
                     SearchBarView(placeholder: "Search movies", text: self.$movieSearchState.query)
-                        .listRowInsets(EdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8))
-                        
                     
                     LoadingView(isLoading: self.movieSearchState.isLoading, error: self.movieSearchState.error) {
                         self.movieSearchState.search(query: self.movieSearchState.query)
@@ -28,15 +29,18 @@ struct MovieSearchView: View {
                                 VStack(alignment: .leading) {
                                     Text(movie.title)
                                     Text(movie.yearText)
-                                }
+                                    Divider()
+                                }.padding(.leading)
                             }
                         }
                     }
-                }
+                 }
+             }
+        }
                 .onAppear {
                     self.movieSearchState.startObserve()
                 }
-            
+                .navigationBarTitleDisplayMode(.inline).foregroundColor(.black)
 
             .navigationBarHidden(false)
         

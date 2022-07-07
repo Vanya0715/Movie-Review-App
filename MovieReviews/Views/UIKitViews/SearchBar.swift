@@ -22,6 +22,9 @@ struct SearchBarView: UIViewRepresentable {
         searchBar.searchBarStyle = .default
         searchBar.enablesReturnKeyAutomatically = false
         searchBar.delegate = context.coordinator
+        //searchBar.barStyle = .default
+        searchBar.barTintColor = UIColor(named: "Color")
+   
         return searchBar
     }
     

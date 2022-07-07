@@ -14,7 +14,7 @@ struct MovieDetailView: View {
     @ObservedObject private var movieDetailState = MovieDetailsState()
     
     var body: some View {
-        ZStack {
+        ZStack(alignment: .topLeading) {
             LoadingView(isLoading: self.movieDetailState.isLoading, error: self.movieDetailState.error) {
                 self.movieDetailState.loadMovie(id: self.movieId)
             }
@@ -23,7 +23,8 @@ struct MovieDetailView: View {
                 MovieDetailListView(movie: self.movieDetailState.movie!)
             }
         }
-        .navigationViewStyle(.stack)
+        
+    
         .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 self.movieDetailState.loadMovie(id: self.movieId)
@@ -42,7 +43,10 @@ struct MovieDetailListView: View {
     
     var body: some View {
       
-            
+        ZStack {
+            LinearGradient(gradient: Gradient(colors: [.blue.opacity(0.2), .purple.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
+                .edgesIgnoringSafeArea(.all)
+       
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 20) {
                     MovieDetail(movie: movie)
@@ -105,6 +109,7 @@ struct MovieDetailListView: View {
                     .navigationBarHidden(true)
             } .coordinateSpace(name: "SCROLL")
     }
+    }
 }
 
 struct MovieDetail: View {
@@ -135,21 +140,12 @@ struct MovieDetail: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: maxHeight + offset, alignment: .bottom)
                     .shadow(color: .black.opacity(0.7), radius: 8, y: 15)
-//                    .overlay(HStack {
-//                        Spacer()
-//                        Button {
-//
-//                        } label: {
-//                            Image(systemName: "xmark")
-//                                .font(.body.bold())
-//                                .foregroundColor(.white)
-//                        }.padding()
-//                    }.padding()
-//                             ,alignment: .top
-//                    )
+                    
+
                 }
                 .frame(height: maxHeight)
                 .offset(y: -offset)
+                .padding(.bottom)
                 
                 VStack(alignment: .leading, spacing: 10) {
                 

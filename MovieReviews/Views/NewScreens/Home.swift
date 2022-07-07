@@ -11,6 +11,8 @@ struct Home: View {
     @ObservedObject var movieSearchState = MovieSearchState()
     var body: some View {
         ZStack{
+            LinearGradient(gradient: Gradient(colors: [.blue.opacity(0.2), .purple.opacity(0.2)]), startPoint: .top, endPoint: .bottom)
+                .edgesIgnoringSafeArea(.all)
             VStack {
                 
                         NavigationLink {

@@ -49,14 +49,22 @@ struct TabView: View {
                                 .font(.caption2)
                                 .lineLimit(1)
                         }
+                        .foregroundColor(selectedTab == items.tab ? .purple.opacity(0.8) : .gray)
+                        
                         .frame(maxWidth: .infinity)
                     }
+                    
                     .foregroundStyle(selectedTab == items.tab ? .primary : .secondary)
                 }
             }
+            .padding()
             .padding(.horizontal, 8)
-           
-        }
+            .background(.white.opacity(0.3))
+            .clipShape(CustomCorner(corners: [.topLeft, .topRight, .bottomLeft, .bottomRight], radius: 50))
+            .edgesIgnoringSafeArea(.all)
+            }
+            
+            .ignoresSafeArea(.all)
         }
     }
 }
